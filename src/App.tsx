@@ -1,15 +1,31 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import AppFooter from './components/AppFooter';
 import AppHeader from './components/AppHeader';
 import { validatePortfolio } from './engine/validators';
-import ArchitectureView from './views/ArchitectureView';
-import AtsView from './views/AtsView';
-import CareerView from './views/CareerView';
-import CredentialsView from './views/CredentialsView';
-import TelemetryView from './views/TelemetryView';
-import VenturesView from './views/VenturesView';
+
+const ArchitectureView = lazy(() => import('./views/ArchitectureView'));
+const AtsView = lazy(() => import('./views/AtsView'));
+const CareerView = lazy(() => import('./views/CareerView'));
+const CredentialsView = lazy(() => import('./views/CredentialsView'));
+const TelemetryView = lazy(() => import('./views/TelemetryView'));
+const VenturesView = lazy(() => import('./views/VenturesView'));
+
+function ViewSkeleton() {
+  return (
+    <div className="animate-pulse space-y-4 p-8">
+      <div className="h-8 w-64 rounded bg-slate-700" />
+      <div className="h-4 w-full rounded bg-slate-700" />
+      <div className="h-4 w-5/6 rounded bg-slate-700" />
+      <div className="grid grid-cols-3 gap-4">
+        <div className="h-24 rounded bg-slate-700" />
+        <div className="h-24 rounded bg-slate-700" />
+        <div className="h-24 rounded bg-slate-700" />
+      </div>
+    </div>
+  );
+}
 
 function Shell() {
   const location = useLocation();
@@ -34,7 +50,9 @@ function Shell() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.22, ease: 'easeOut' }}
           >
-            <Outlet />
+            <Suspense fallback={<ViewSkeleton />}>
+              <Outlet />
+            </Suspense>
           </motion.div>
         </AnimatePresence>
       </main>
