@@ -16,6 +16,17 @@ export default function ParticleMind() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
+        const location = useLocation();
+    const formationMap: Record<string, number> = {
+      '/telemetry': 0,    // cluster
+      '/architecture': 1, // trace
+      '/career': 2,       // lattice
+      '/ventures': 3,     // converge
+      '/credentials': 0,
+      '/ats': 0,
+    };
+    const targetFormation = formationMap[location.pathname] ?? 0;
+    setFormation(targetFormation);
     if (!canvas) return;
 
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
