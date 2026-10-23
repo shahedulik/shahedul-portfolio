@@ -4,18 +4,18 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['"Times New Roman"', 'Times', '"Liberation Serif"', 'Georgia', 'serif'],
-        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+        serif: ['"Fraunces"', 'Georgia', '"Times New Roman"', 'serif'],
+        mono: ['"IBM Plex Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
       colors: {
-        ink: { 900: '#2B2233', 800: '#382D42', 700: '#463A52' },
-        line: '#5A4B69',
-        data: '#F0B493',
-        gold: '#EFEAC6',
-        pos: '#D8969E',
-        neg: '#8E7BA0',
-        mut: '#C4A9B8',
-        cream: '#F4EFDD',
+        ink: { 900: '#0a0e12', 800: '#101820', 700: '#16222c' },
+        line: '#33566e',
+        data: '#8fb2c6',
+        gold: '#b8cdd9',
+        pos: '#dceaf2',
+        neg: '#92a7b4',
+        mut: '#92a7b4',
+        cream: '#e6edf1',
       },
     },
   },
