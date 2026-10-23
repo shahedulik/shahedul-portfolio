@@ -73,3 +73,4 @@ export default defineConfig([
 ])
 
 ```
+- Experimental Thinking Portfolio (Three.js): https://github.com/shahedulik/thinking-portfolio
