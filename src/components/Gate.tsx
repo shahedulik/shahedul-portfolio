@@ -1,135 +1,120 @@
-import { useRef, useEffect, useState, useCallback } from 'react';
-import { PROFILE, EXPERIENCE, VENTURES } from '../data/portfolioData';
-interface GateProps {
-  onEnter: () => void;
-}
-export default function Gate({ onEnter }: GateProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import { PROFILE } from '../data/portfolioData';
+import {
+  EXIT_MS,
+  WATER_EASE,
+  PULL_MAX_Y,
+  TILT_MAX_DEG,
+  PULL_LERP,
+  prefersReducedMotion,
+  subscribeReducedMotion,
+  createPointerPull,
+  spawnRipple,
+} from './gateMotion';
+
+const NAME = PROFILE?.name ?? 'Shahedul Islam Khan';
+const ROLE = 'Business Intelligence Analyst';           // single title (D2 override)
+const BIO = [                                            // exactly two short lines
+  'I build and ship data systems.',
+  'Raw signal, turned into decisions a business can act on.',
+];
+const CHIP_LABEL = 'See the details';                    // 3-word guide-to-click (D4 override)
+
+export default function Gate({ onEnter }: { onEnter: () => void }) {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const railRef = useRef<HTMLDivElement>(null);
+  const chipRef = useRef<HTMLButtonElement>(null);
   const [exiting, setExiting] = useState(false);
-  const [reduceMotion, setReduceMotion] = useState(false);
+  const [reduced, setReduced] = useState(prefersReducedMotion);
+
+  useEffect(() => subscribeReducedMotion(setReduced), []);
+
+  // Continuous pointer pull: the whole rail drifts vertically with the cursor
+  // (the "slide-down follows you" affordance). Skipped entirely under reduced motion.
   useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReduceMotion(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setReduceMotion(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, []);
-  useEffect(() => {
-    if (reduceMotion || !containerRef.current) return;
-    const planes = containerRef.current.querySelectorAll<HTMLElement>('.gate-plane');
-    let targetX = 0, targetY = 0;
-    let currentX = 0, currentY = 0;
-    let rafId = 0;
-    const onMove = (e: PointerEvent) => {
-      const nx = (e.clientX / window.innerWidth) * 2 - 1;
-      const ny = (e.clientY / window.innerHeight) * 2 - 1;
-      targetX = nx * 3.5;
-      targetY = ny * -3.5;
-    };
-    const onLeave = () => { targetX = 0; targetY = 0; };
-    const loop = () => {
-      currentX += (targetX - currentX) * 0.07;
-      currentY += (targetY - currentY) * 0.07;
-      planes.forEach((plane) => {
-        const rank = parseFloat(plane.dataset.rank || '1');
-        const tz = rank * 38;
-        plane.style.transform = `translateZ(${tz}px) rotateY(${currentX}deg) rotateX(${currentY}deg)`;
-      });
-      rafId = requestAnimationFrame(loop);
-    };
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerleave', onLeave);
-    rafId = requestAnimationFrame(loop);
-    return () => {
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerleave', onLeave);
-      cancelAnimationFrame(rafId);
-      planes.forEach((plane) => { plane.style.transform = 'translateZ(0) rotateY(0) rotateX(0)'; });
-    };
-  }, [reduceMotion]);
-  const handleEnter = useCallback(() => {
-    if (exiting) return;
-    setExiting(true);
-    sessionStorage.setItem('gate-seen', '1');
-    
-    const duration = reduceMotion ? 0 : 300;
-    setTimeout(() => {
-      if (document.startViewTransition) {
-        document.startViewTransition(() => { onEnter(); });
-      } else {
-        onEnter();
+    if (reduced || !railRef.current) return;
+    const pull = createPointerPull(railRef.current, {
+      maxY: PULL_MAX_Y,
+      tiltDeg: TILT_MAX_DEG,
+      lerp: PULL_LERP,
+    });
+    return () => pull.stop();
+  }, [reduced]);
+
+  const handleEnter = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (exiting) return;
+      const chip = chipRef.current;
+      if (chip) {
+        const r = chip.getBoundingClientRect();
+        // ripple originates at the true press point (or chip centre for keyboard)
+        spawnRipple(chip, e.clientX || r.left + r.width / 2, e.clientY || r.top + r.height / 2);
       }
-    }, duration);
-  }, [exiting, onEnter, reduceMotion]);
-  const role = PROFILE.headline || 'Business Intelligence Analyst';
-  const bio = PROFILE.summary || "I build and ship data systems that turn raw signal into decisions a business can act on. The work sits where machine learning, pipelines, and procurement meet the people who own the outcome.";
-  
-  const highlights = [
-    ...(EXPERIENCE.slice(0, 2) || []).map(e => ({
-      title: e.company,
-      proof: e.bullets?.[0] || e.role,
-      tags: e.tags?.join(' · ') || ''
-    })),
-    ...(VENTURES.slice(0, 1) || []).map(v => ({
-      title: v.name,
-      proof: v.mission || v.highlights?.[0] || '',
-      tags: v.highlights?.join(' · ') || ''
-    }))
-  ].slice(0, 3);
-  const nameFontSize = typeof window !== 'undefined' && window.innerWidth > 768 ? 'text-7xl' : 'text-5xl';
+      setExiting(true);
+      sessionStorage.setItem('gate-seen', '1');
+      const finish = () => onEnter();
+      if (reduced) {
+        finish();
+        return;
+      }
+      // wave exit: CSS .is-exiting runs the transition; transitionend fires onEnter,
+      // with a timeout safety net in case the event is suppressed.
+      rootRef.current?.addEventListener('transitionend', finish, { once: true });
+      window.setTimeout(finish, EXIT_MS + 120);
+    },
+    [exiting, onEnter, reduced]
+  );
+
+  const rise = (i: number) =>
+    reduced
+      ? { initial: { opacity: 1 }, animate: { opacity: 1 } }
+      : {
+          initial: { opacity: 0, y: 14 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.7, ease: WATER_EASE, delay: i * 0.09 },
+        };
+
   return (
-    <div 
-      ref={containerRef}
-      className={`gate-veil-root fixed inset-0 z-50 pointer-events-none gate-perspective transition-opacity ${exiting ? 'opacity-0 duration-300' : 'opacity-100'}`}
-      style={reduceMotion ? { perspective: 'none' } : {}}
+    <div
+      ref={rootRef}
+      className={`gate-veil-root gate-perspective fixed inset-0 z-50 pointer-events-none${
+        exiting ? ' is-exiting' : ''
+      }`}
     >
-      <div className="h-full w-full flex items-center pointer-events-none">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 w-full">
-          <div className="max-w-2xl space-y-8">
-            
-            <div className="gate-plane" data-rank="0.8">
-              <h1 
-                className={`font-serif font-light leading-[0.95] tracking-tight text-cream ${nameFontSize}`}
-                style={{ fontVariationSettings: "'opsz' 144, 'wght' 350" }}
-              >
-                {PROFILE.name}
-              </h1>
-            </div>
-            <div className="gate-plane" data-rank="0.6">
-              <p className="font-mono text-[11px] tracking-[0.2em] uppercase text-data">
-                {role}
-              </p>
-            </div>
-            <div className="gate-plane" data-rank="0.4">
-              <p className="font-serif text-xl text-cream/80 leading-relaxed max-w-[46ch]">
-                {bio}
-              </p>
-            </div>
-            <div className="gate-plane" data-rank="0.2">
-              <ul className="gate-thread space-y-6">
-                {highlights.map((item, i) => (
-                  <li key={i} className="relative pl-8">
-                    <span className="gate-node absolute left-0 top-[7px]" />
-                    <h3 className="font-serif text-lg text-cream mb-1">{item.title}</h3>
-                    <p className="font-serif text-sm text-mut leading-snug mb-2">{item.proof}</p>
-                    {item.tags && (
-                      <p className="font-mono text-[10px] tracking-wider text-gold uppercase">{item.tags}</p>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="gate-plane pt-4" data-rank="1.0">
+      <div className="flex h-full w-full items-center pointer-events-none">
+        <div className="mx-auto w-full max-w-[34rem] px-[clamp(20px,7vw,110px)]">
+          {/* rail = the element gateMotion translates with the pointer */}
+          <div ref={railRef} className="gate-rail space-y-7">
+            <motion.h1 {...rise(0)} className="font-serif font-light leading-none tracking-tight text-cream/90 text-[clamp(1.25rem,2.2vw,1.9rem)]">
+              {NAME}
+            </motion.h1>
+
+            <motion.p {...rise(1)} className="font-mono text-[10px] uppercase tracking-[0.3em] text-mut">
+              {ROLE}
+            </motion.p>
+
+            <motion.div {...rise(2)} className="space-y-1">
+              {BIO.map((line) => (
+                <p key={line} className="font-serif text-base leading-relaxed text-cream/70">
+                  {line}
+                </p>
+              ))}
+            </motion.div>
+
+            <motion.div {...rise(3)} className="pt-3">
               <button
+                ref={chipRef}
                 type="button"
                 onClick={handleEnter}
-                aria-label="Enter portfolio"
-                className="gate-chip group relative inline-flex items-center justify-center px-6 py-3 bg-ink-800/40 backdrop-blur-[6px] border border-line/40 hover:border-data/70 active:scale-[0.97] transition-all duration-[180ms] ease-[cubic-bezier(.2,.7,.2,1)] active:duration-[120ms] focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-data pointer-events-auto cursor-pointer"
+                aria-label={CHIP_LABEL}
+                className="gate-chip group pointer-events-auto relative inline-flex cursor-pointer items-center gap-3 overflow-hidden rounded-full border border-line/40 bg-ink-800/40 px-5 py-3 font-mono text-[11px] uppercase tracking-[0.18em] text-cream backdrop-blur-[6px] transition-[border-color,transform] duration-[180ms] ease-[cubic-bezier(.2,.7,.2,1)] hover:border-data/70 active:scale-[0.97] active:duration-[120ms] focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-data"
               >
-                <span className="gate-chip-halo absolute inset-0 pointer-events-none" />
-                <span className="w-[6px] h-[6px] rounded-full bg-mut group-hover:bg-data transition-colors" />
+                <span className="gate-chip-halo pointer-events-none absolute inset-0" />
+                <span className="relative h-[6px] w-[6px] shrink-0 rounded-full bg-mut transition-colors group-hover:bg-data" />
+                <span className="relative">{CHIP_LABEL}</span>
               </button>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
