@@ -11,22 +11,22 @@ const CONFIG = {
   morphDuration: 2800,
 };
 
+const FORMATION_BY_PATH: Record<string, number> = {
+  '/telemetry': 0, // cluster
+  '/architecture': 1, // trace
+  '/career': 2, // lattice
+  '/ventures': 3, // converge
+  '/credentials': 0,
+  '/ats': 0,
+};
+
 export default function ParticleMind() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const location = useLocation();
+  const setFormationRef = useRef<(index: number) => void>(() => {});
 
   useEffect(() => {
     const canvas = canvasRef.current;
-        const location = useLocation();
-    const formationMap: Record<string, number> = {
-      '/telemetry': 0,    // cluster
-      '/architecture': 1, // trace
-      '/career': 2,       // lattice
-      '/ventures': 3,     // converge
-      '/credentials': 0,
-      '/ats': 0,
-    };
-    const targetFormation = formationMap[location.pathname] ?? 0;
-    setFormation(targetFormation);
     if (!canvas) return;
 
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
@@ -174,6 +174,8 @@ export default function ParticleMind() {
       if (idx === current && morphStart > -1e8) return;
       current = idx; from.set(cur); morphStart = performance.now(); swapping = true;
     };
+    setFormationRef.current = setFormation;
+    setFormation(FORMATION_BY_PATH[window.location.pathname] ?? 0);
 
     const sections = document.querySelectorAll<HTMLElement>('[data-formation]');
     const io = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
@@ -230,6 +232,7 @@ export default function ParticleMind() {
 
     return () => {
       running = false; cancelAnimationFrame(animationId);
+      setFormationRef.current = () => {};
       window.removeEventListener('pointermove', onPointer);
       window.removeEventListener('resize', onResize);
       document.removeEventListener('visibilitychange', onVisibility);
@@ -238,6 +241,10 @@ export default function ParticleMind() {
       renderer.dispose();
     };
   }, []);
+
+  useEffect(() => {
+    setFormationRef.current(FORMATION_BY_PATH[location.pathname] ?? 0);
+  }, [location.pathname]);
 
   return <canvas ref={canvasRef} className="fixed inset-0 w-full h-full z-0 pointer-events-none" aria-hidden="true" />;
 }
