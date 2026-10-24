@@ -45,3 +45,71 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* =========================================
+   GATE OVERLAY APPEND
+   ========================================= */
+@property --halo-radius {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+@property --halo-alpha {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+.gate-perspective {
+  perspective: 1200px;
+}
+.gate-plane {
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 100ms linear;
+}
+.gate-chip-halo {
+  --halo-radius: 0px;
+  --halo-alpha: 0;
+  box-shadow: 0 0 var(--halo-radius) rgba(143, 178, 198, var(--halo-alpha));
+  transition: --halo-radius 180ms cubic-bezier(.2,.7,.2,1), --halo-alpha 180ms cubic-bezier(.2,.7,.2,1);
+}
+.group:hover .gate-chip-halo {
+  --halo-radius: 12px;
+  --halo-alpha: 0.4;
+}
+.group:active .gate-chip-halo {
+  --halo-radius: 2px;
+  --halo-alpha: 0.8;
+  transition-duration: 120ms;
+}
+.gate-thread {
+  position: relative;
+}
+.gate-thread::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(51, 86, 110, 0.4) 8%, rgba(51, 86, 110, 0.4) 92%, transparent);
+}
+.gate-node {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1px solid #8fb2c6;
+  background: #0a0e12;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gate-perspective { perspective: none; }
+  .gate-plane { transform: none !important; transition: none !important; will-change: auto; }
+  .gate-chip-halo { display: none; }
+  .group:hover .gate-chip-halo { display: block; }
+}
+@media (prefers-contrast: more) {
+  .gate-node { border-width: 2px; }
+}
+@media print {
+  .gate-veil-root { display: none !important; }
+}
