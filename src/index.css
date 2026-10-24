@@ -65,6 +65,7 @@
 .gate-plane {
   transform-style: preserve-3d;
   will-change: transform;
+  pointer-events: none;
   transition: transform 100ms linear;
 }
 .gate-chip-halo {

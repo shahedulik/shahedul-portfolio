@@ -83,7 +83,7 @@ export default function Gate({ onEnter }: GateProps) {
       className={`gate-veil-root fixed inset-0 z-50 pointer-events-none gate-perspective transition-opacity ${exiting ? 'opacity-0 duration-300' : 'opacity-100'}`}
       style={reduceMotion ? { perspective: 'none' } : {}}
     >
-      <div className="h-full w-full flex items-center pointer-events-auto">
+      <div className="h-full w-full flex items-center pointer-events-none">
         <div className="max-w-7xl mx-auto px-6 sm:px-10 w-full">
           <div className="max-w-2xl space-y-8">
             
@@ -124,7 +124,7 @@ export default function Gate({ onEnter }: GateProps) {
                 type="button"
                 onClick={handleEnter}
                 aria-label="Enter portfolio"
-                className="gate-chip group relative inline-flex items-center justify-center px-6 py-3 bg-ink-800/40 backdrop-blur-[6px] border border-line/40 hover:border-data/70 active:scale-[0.97] transition-all duration-[180ms] ease-[cubic-bezier(.2,.7,.2,1)] active:duration-[120ms] focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-data pointer-events-auto"
+                className="gate-chip group relative inline-flex items-center justify-center px-6 py-3 bg-ink-800/40 backdrop-blur-[6px] border border-line/40 hover:border-data/70 active:scale-[0.97] transition-all duration-[180ms] ease-[cubic-bezier(.2,.7,.2,1)] active:duration-[120ms] focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-data pointer-events-auto cursor-pointer"
               >
                 <span className="gate-chip-halo absolute inset-0 pointer-events-none" />
                 <span className="w-[6px] h-[6px] rounded-full bg-mut group-hover:bg-data transition-colors" />
