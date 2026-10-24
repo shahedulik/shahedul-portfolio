@@ -1,3 +1,4 @@
+// src/components/Gate.tsx
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { PROFILE } from '../data/portfolioData';
@@ -12,26 +13,20 @@ import {
   createPointerPull,
   spawnRipple,
 } from './gateMotion';
-
 const NAME = PROFILE?.name ?? 'Shahedul Islam Khan';
-const ROLE = 'Business Intelligence Analyst';           // single title (D2 override)
-const BIO = [                                            // exactly two short lines
+const ROLE = 'Business Intelligence Analyst';
+const BIO = [
   'I build and ship data systems.',
   'Raw signal, turned into decisions a business can act on.',
 ];
-const CHIP_LABEL = 'See the details';                    // 3-word guide-to-click (D4 override)
-
+const CHIP_LABEL = 'See the details';
 export default function Gate({ onEnter }: { onEnter: () => void }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
   const chipRef = useRef<HTMLButtonElement>(null);
   const [exiting, setExiting] = useState(false);
-  const [reduced, setReduced] = useState(prefersReducedMotion);
-
+  const [reduced, setReduced] = useState(prefersReducedMotion());
   useEffect(() => subscribeReducedMotion(setReduced), []);
-
-  // Continuous pointer pull: the whole rail drifts vertically with the cursor
-  // (the "slide-down follows you" affordance). Skipped entirely under reduced motion.
   useEffect(() => {
     if (reduced || !railRef.current) return;
     const pull = createPointerPull(railRef.current, {
@@ -41,14 +36,12 @@ export default function Gate({ onEnter }: { onEnter: () => void }) {
     });
     return () => pull.stop();
   }, [reduced]);
-
   const handleEnter = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       if (exiting) return;
       const chip = chipRef.current;
       if (chip) {
         const r = chip.getBoundingClientRect();
-        // ripple originates at the true press point (or chip centre for keyboard)
         spawnRipple(chip, e.clientX || r.left + r.width / 2, e.clientY || r.top + r.height / 2);
       }
       setExiting(true);
@@ -58,14 +51,11 @@ export default function Gate({ onEnter }: { onEnter: () => void }) {
         finish();
         return;
       }
-      // wave exit: CSS .is-exiting runs the transition; transitionend fires onEnter,
-      // with a timeout safety net in case the event is suppressed.
       rootRef.current?.addEventListener('transitionend', finish, { once: true });
       window.setTimeout(finish, EXIT_MS + 120);
     },
     [exiting, onEnter, reduced]
   );
-
   const rise = (i: number) =>
     reduced
       ? { initial: { opacity: 1 }, animate: { opacity: 1 } }
@@ -74,7 +64,6 @@ export default function Gate({ onEnter }: { onEnter: () => void }) {
           animate: { opacity: 1, y: 0 },
           transition: { duration: 0.7, ease: WATER_EASE, delay: i * 0.09 },
         };
-
   return (
     <div
       ref={rootRef}
@@ -84,16 +73,13 @@ export default function Gate({ onEnter }: { onEnter: () => void }) {
     >
       <div className="flex h-full w-full items-center pointer-events-none">
         <div className="mx-auto w-full max-w-[34rem] px-[clamp(20px,7vw,110px)]">
-          {/* rail = the element gateMotion translates with the pointer */}
           <div ref={railRef} className="gate-rail space-y-7">
             <motion.h1 {...rise(0)} className="font-serif font-light leading-none tracking-tight text-cream/90 text-[clamp(1.25rem,2.2vw,1.9rem)]">
               {NAME}
             </motion.h1>
-
             <motion.p {...rise(1)} className="font-mono text-[10px] uppercase tracking-[0.3em] text-mut">
               {ROLE}
             </motion.p>
-
             <motion.div {...rise(2)} className="space-y-1">
               {BIO.map((line) => (
                 <p key={line} className="font-serif text-base leading-relaxed text-cream/70">
@@ -101,7 +87,6 @@ export default function Gate({ onEnter }: { onEnter: () => void }) {
                 </p>
               ))}
             </motion.div>
-
             <motion.div {...rise(3)} className="pt-3">
               <button
                 ref={chipRef}
