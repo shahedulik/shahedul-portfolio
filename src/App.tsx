@@ -1,9 +1,10 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useLayoutEffect, useState } from 'react';
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import AppFooter from './components/AppFooter';
 import AppHeader from './components/AppHeader';
 import Gate from './components/Gate';
+import HeroLight from './components/HeroLight';
 import ParticleMind from './components/ParticleMind';
 import { validatePortfolio } from './engine/validators';
 
@@ -39,27 +40,60 @@ function Shell() {
       else console.warn('[portfolio-engine] data issues:', result.issues);
     }
   }, []);
+  // Preserves gate wiring (showGate, gate-seen, gateUp, the opacity-wrapper className, and the gate mount).
+  const lightRoute = ['/', '/career', '/credentials', '/ats'].includes(location.pathname);
+  useEffect(() => {
+    if (lightRoute || gateUp) document.body.dataset.gate = 'up';
+    else delete document.body.dataset.gate;
+  }, [lightRoute, gateUp]); // reuses the existing ParticleMind sleep hook; ParticleMind stays untouched.
+  useLayoutEffect(() => {
+    // Theme class is applied after commit so the frozen opacity-wrapper className expression stays unchanged.
+    const wrapper = document.querySelector<HTMLElement>('div.relative.z-10');
+    if (!wrapper) return;
+    const home = location.pathname === '/';
+    wrapper.classList.toggle('theme-light', lightRoute);
+    wrapper.style.backgroundColor = lightRoute ? 'var(--bg-off-white)' : '';
+    wrapper.style.minHeight = home ? '0px' : '';
+    wrapper.style.height = home ? '100svh' : '';
+    wrapper.style.maxHeight = home ? '100svh' : '';
+    wrapper.style.overflow = home ? 'hidden' : '';
+    const shell = wrapper.parentElement;
+    if (shell) {
+      shell.style.minHeight = home ? '0px' : '';
+      shell.style.height = home ? '100svh' : '';
+      shell.style.maxHeight = home ? '100svh' : '';
+      shell.style.overflow = home ? 'hidden' : '';
+    }
+  });
   return (
     <div className="min-h-screen flex flex-col relative">
       <ParticleMind />
       <div className={`relative z-10 flex flex-col min-h-screen transition-opacity duration-300 ${gateUp ? 'opacity-0' : 'opacity-100'}`}>
-        <AppHeader />
-        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-8">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={location.pathname}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.22, ease: 'easeOut' }}
-            >
-              <Suspense fallback={<ViewSkeleton />}>
-                <Outlet />
-              </Suspense>
-            </motion.div>
-          </AnimatePresence>
-        </main>
-        <AppFooter />
+        {location.pathname === '/' ? (
+          <Suspense fallback={<ViewSkeleton />}>
+            <Outlet />
+          </Suspense>
+        ) : (
+          <>
+            <AppHeader />
+            <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-8">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={location.pathname}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.22, ease: 'easeOut' }}
+                >
+                  <Suspense fallback={<ViewSkeleton />}>
+                    <Outlet />
+                  </Suspense>
+                </motion.div>
+              </AnimatePresence>
+            </main>
+            <AppFooter />
+          </>
+        )}
       </div>
       {gateUp && (
         <Gate
@@ -83,7 +117,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<Shell />}>
-          <Route index element={<Navigate to="/telemetry" replace />} />
+          <Route index element={<HeroLight />} />
           <Route path="/telemetry" element={<TelemetryView />} />
           <Route path="/career" element={<CareerView />} />
           <Route path="/credentials" element={<CredentialsView />} />
