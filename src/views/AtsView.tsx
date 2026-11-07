@@ -3,21 +3,23 @@ import SectionTitle from '../components/SectionTitle';
 import { AWARDS, CERTIFICATIONS, COMPETENCIES, EDUCATION, EXPERIENCE, PROFILE, VENTURES } from '../data/portfolioData';
 
 export default function AtsView() {
+  // Preserves #ats-sheet markup. Screen chrome uses the light tokens; print rules are unchanged.
   return (
     <div className="space-y-4">
       <SectionTitle index="04" title="ATS Resume & Export" />
 
       <div className="no-print card p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="font-serif text-lg font-bold text-white">Clean ATS Resume Engine</h2>
-          <p className="font-mono text-xs text-mut mt-1">
+          <h2 className="t-display text-lg font-bold">Clean ATS Resume Engine</h2>
+          <p className="t-meta mt-1">
             Single-column, parser-safe layout · Times New Roman · prints to PDF via browser dialog
           </p>
         </div>
         <button
           data-testid="print-button"
+          type="button"
           onClick={() => window.print()}
-          className="flex items-center gap-2 bg-data text-ink-900 font-mono text-xs font-semibold px-4 py-2 rounded-sm hover:bg-white transition-colors"
+          className="btn-primary"
         >
           <Printer className="w-4 h-4" /> Print / Save PDF
         </button>
