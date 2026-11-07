@@ -13,7 +13,7 @@ export default function TelemetryView() {
   return (
     <div className="space-y-8">
       <div>
-        <SectionTitle index="01" title="I turn BI and procurement data into won contracts and pipeline." />
+        <SectionTitle index="01" title="I Build & Ship Data-Systems" />
         <div className="max-w-[66ch] leading-relaxed">
           <p data-testid="hero-summary" className="text-sm text-mut">
             Certified Data Analyst with 150+ US public-sector RFP submissions, 5 strategic joint ventures, and a pipeline that converts procurement signal into contract outcomes. I combine predictive analytics, market research, and sales engineering to unlock enterprise profitability for clients across four markets.
