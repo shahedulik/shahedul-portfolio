@@ -5,11 +5,17 @@ import SectionTitle from '../components/SectionTitle';
 import Sparkline from '../components/Sparkline';
 import { PROFILE } from '../data/portfolioData';
 import {
-  careerStats, getAttainmentSeries, getCompetencies, getKpis, getPipelineSeries,
+  getAttainmentSeries, getCompetencies, getKpis, getPipelineSeries,
 } from '../engine/metrics';
 
 export default function TelemetryView() {
-  const stats = careerStats();
+  const filteredKpis = getKpis().filter((k) => ![
+    'Strategic Joint Ventures structured',
+    'Monthly market-share target attained',
+    'Daily cold-outreach capacity',
+    'Ventures incubated',
+  ].includes(k.label));
+  const filteredAttainment = getAttainmentSeries().filter((a) => a.label !== 'Outreach SLA adherence (500/day engine)');
   return (
     <div className="space-y-8">
       <div>
@@ -21,18 +27,11 @@ export default function TelemetryView() {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 font-mono text-[11px]">
-        <span className="border border-line/70 bg-ink-700/60 text-mut px-2 py-1 rounded-sm">{stats.mandates} mandates</span>
-        <span className="border border-line/70 bg-ink-700/60 text-mut px-2 py-1 rounded-sm">{stats.markets.join(' · ')} markets</span>
-        <span className="border border-line/70 bg-ink-700/60 text-mut px-2 py-1 rounded-sm">{stats.achievements} tracked achievements</span>
-        <span className="border border-pos/40 bg-pos/10 text-pos px-2 py-1 rounded-sm">engine: validated ✓</span>
-      </div>
-
       <div
         style={{ fontFamily: '"Times New Roman", Times, serif' }}
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
       >
-        {getKpis().map((k) => (
+        {filteredKpis.map((k) => (
           <div key={k.label} className="flex flex-col [&>:first-child]:flex-1">
             <KpiCard kpi={k} />
             <div className="kpi-card-footer px-1 pt-1.5 text-[10px] tracking-wide text-mut/70">
@@ -56,7 +55,7 @@ export default function TelemetryView() {
           <div className="font-mono text-[11px] uppercase tracking-widest text-mut">
             Target attainment by mandate
           </div>
-          {getAttainmentSeries().map((a) => (
+          {filteredAttainment.map((a) => (
             <BarMeter key={a.label} label={a.label} pct={a.pct} />
           ))}
         </div>
