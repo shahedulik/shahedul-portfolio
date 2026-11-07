@@ -1,6 +1,6 @@
 import { Menu, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { PROFILE } from '../data/portfolioData';
 
 const NAV = [
@@ -14,6 +14,8 @@ export default function AppHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  // Preserves tab labels, menu toggle, mailto CTA, CV download, and the availability line.
+  const light = ['/', '/career', '/credentials', '/ats'].includes(useLocation().pathname);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -27,12 +29,12 @@ export default function AppHeader() {
   }, [menuOpen]);
 
   return (
-    <header data-testid="app-header" className="sticky top-0 z-40 border-b border-line/70 bg-ink-900/85 backdrop-blur">
+    <header data-testid="app-header" className={light ? 'site-header' : 'sticky top-0 z-40 border-b border-line/70 bg-ink-900/85 backdrop-blur'}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-baseline gap-3 flex-wrap">
-            <span className="font-serif text-xl font-bold tracking-wide text-white">{PROFILE.name}</span>
-            <span className="font-mono text-[11px] text-data border border-data/40 bg-data/10 px-2 py-0.5 rounded-sm">
+            <span className={light ? 'site-brand text-xl font-bold tracking-wide' : 'font-serif text-xl font-bold tracking-wide text-white'}>{PROFILE.name}</span>
+            <span className={light ? 'site-kicker px-2 py-0.5 rounded-sm' : 'font-mono text-[11px] text-data border border-data/40 bg-data/10 px-2 py-0.5 rounded-sm'}>
               {PROFILE.headline}
             </span>
           </div>
@@ -64,11 +66,13 @@ export default function AppHeader() {
                   onClick={() => setMenuOpen(false)}
                   data-testid={`nav-link-${item.to.slice(1)}`}
                   className={({ isActive }) =>
-                    `whitespace-nowrap px-3 py-1.5 font-mono text-xs rounded-sm transition-colors ${
-                      isActive
-                        ? 'bg-data/15 text-data border border-data/40'
-                        : 'text-mut hover:text-white border border-transparent'
-                    }`
+                    light
+                      ? `nav-link-light whitespace-nowrap px-3 py-1.5 rounded-sm transition-colors${isActive ? ' is-active' : ''}`
+                      : `whitespace-nowrap px-3 py-1.5 font-mono text-xs rounded-sm transition-colors ${
+                          isActive
+                            ? 'bg-data/15 text-data border border-data/40'
+                            : 'text-mut hover:text-white border border-transparent'
+                        }`
                   }
                 >
                   {item.label}
@@ -76,20 +80,20 @@ export default function AppHeader() {
               ))}
             </nav>
             <div className="flex items-center gap-2">
-              <a data-testid="header-cta" className="header-cta" href={`mailto:${PROFILE.email}`}>
+              <a data-testid="header-cta" className={light ? 'header-cta btn-primary' : 'header-cta'} href={`mailto:${PROFILE.email}`}>
                 Book a 20-min call
               </a>
               <a
                 data-testid="download-cv"
                 href="/SHAH-CV.pdf"
                 download
-                className="whitespace-nowrap font-mono text-xs text-data underline-offset-4 hover:text-white hover:underline transition-colors"
+                className={light ? 'btn-ghost header-cv whitespace-nowrap transition-colors' : 'whitespace-nowrap font-mono text-xs text-data underline-offset-4 hover:text-white hover:underline transition-colors'}
               >
                 Download CV
               </a>
             </div>
           </div>
-          <div data-testid="availability" className="font-mono text-[10px] text-mut">
+          <div data-testid="availability" className={light ? 'site-avail' : 'font-mono text-[10px] text-mut'}>
             Available UTC+6 · Overlaps US EST 7pm–11pm weekdays
           </div>
         </div>
