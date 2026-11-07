@@ -28,11 +28,14 @@ export default function TelemetryView() {
         <span className="border border-pos/40 bg-pos/10 text-pos px-2 py-1 rounded-sm">engine: validated ✓</span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        style={{ fontFamily: '"Times New Roman", Times, serif' }}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+      >
         {getKpis().map((k) => (
           <div key={k.label} className="flex flex-col [&>:first-child]:flex-1">
             <KpiCard kpi={k} />
-            <div className="kpi-card-footer px-1 pt-1.5 font-mono text-[10px] tracking-wide text-mut/70">
+            <div className="kpi-card-footer px-1 pt-1.5 text-[10px] tracking-wide text-mut/70">
               As of November 2026 · source: CRM
             </div>
           </div>
