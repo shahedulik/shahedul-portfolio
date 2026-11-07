@@ -34,12 +34,12 @@ export const ATTAINMENT = [
 ];
 
 export const COMPETENCIES: CompetencyItem[] = [
-  { title: 'Business Intelligence & Machine Learning', detail: 'Predictive modeling, pipeline forecasting, Python analytics, SQL, MLflow-style experiment discipline' },
-  { title: 'US Public Procurement & RFPs', detail: 'Proposal lifecycle engineering, compliance matrices, VOSB/WOSB joint-venture structuring' },
-  { title: 'Discovery Sessions & Client Pitching', detail: 'Value-proposition design, C-suite workshops, data-informed negotiation' },
-  { title: 'B2B Pipeline Operations', detail: 'HubSpot, Salesforce, Apollo, LinkedIn Sales Navigator — hygiene, scoring, velocity reporting' },
-  { title: 'C-Suite Pitching & Negotiation', detail: 'Executive narrative building from BI dashboards to boardroom decisions' },
-  { title: 'Cross-Functional & Operational Leadership', detail: 'Marketing × sales × product alignment, SaaS packaging, onboarding collateral' },
+  { title: 'Business Intelligence and Quality Analysis', detail: 'BI signal quality control, performance diagnostics, and decision-ready insight reporting.' },
+  { title: 'US Public Procurement & RFPs', detail: 'Proposal lifecycle execution, compliance mapping, and public-sector submission operations.' },
+  { title: 'Feature Engineering & Data Visualization', detail: 'Feature design for predictive workflows and clear dashboard storytelling for stakeholders.' },
+  { title: 'Revenue & Growth Analytics', detail: 'Conversion trend analysis, demand signal tracking, and growth-focused performance measurement.' },
+  { title: 'B2B Sales & Pipeline Management', detail: 'Pipeline hygiene, lead qualification, and cadence management across outbound channels.' },
+  { title: 'Cross-Functional & Operational Leadership', detail: 'Alignment across marketing, sales, and operations to execute delivery at scale.' },
 ];
 
 export const EXPERIENCE: ExperienceItem[] = [
