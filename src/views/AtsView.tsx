@@ -5,7 +5,7 @@ import { AWARDS, CERTIFICATIONS, COMPETENCIES, EDUCATION, EXPERIENCE, PROFILE, V
 export default function AtsView() {
   return (
     <div className="space-y-4">
-      <SectionTitle index="06" title="ATS Resume & Export" />
+      <SectionTitle index="04" title="ATS Resume & Export" />
 
       <div className="no-print card p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>

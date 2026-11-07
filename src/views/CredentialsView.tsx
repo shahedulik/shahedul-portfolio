@@ -4,7 +4,7 @@ import { CERTIFICATIONS, EDUCATION, MEMBERSHIPS } from '../data/portfolioData';
 export default function CredentialsView() {
   return (
     <div className="space-y-8">
-      <SectionTitle index="05" title="Credentials & Affiliations" subtitle="Formal education, verified certifications, and professional memberships." />
+      <SectionTitle index="03" title="Credentials & Affiliations" subtitle="Formal education, verified certifications, and professional memberships." />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {EDUCATION.map((e) => (

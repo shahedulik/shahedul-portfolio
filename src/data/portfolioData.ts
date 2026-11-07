@@ -51,7 +51,7 @@ export const EXPERIENCE: ExperienceItem[] = [
     period: 'April 2026 – Present',
     bullets: [
       'Expanded the active HRMS and LMS client base by over 30% within 60 days via a multi-channel go-to-market strategy targeting 10+ SME verticals across the US Tri-State area.',
-      'Produced 90+ procurement proposals for the US public sector and organized 5 strategic Joint Ventures (VOSB & WOSB) to enhance bidding capacity and contract eligibility.',
+      'Produced 150+ procurement proposals for the US public sector and organized 5 strategic Joint Ventures (VOSB & WOSB) to enhance bidding capacity and contract eligibility.',
       'Founded and launched Insight AI Consultancy (enterprise LLMs & AI agents) and Upskill Academia 501(c)(3), creating data-driven impact frameworks to support grant funding.',
       'Secured international Memoranda of Understanding with Swisscontact and Edgent LLC to foster strategic corporate growth.',
       'Established the Real Estate Property Preservation division; owned product packaging, branding, and user-onboarding collateral for key SaaS lines.',

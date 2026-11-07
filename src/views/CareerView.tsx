@@ -5,7 +5,7 @@ export default function CareerView() {
   return (
     <div className="space-y-6">
       <SectionTitle
-        index="03"
+        index="02"
         title="Enterprise Career Matrix"
         subtitle="Six mandates across US, AU, UK and BD markets — sales engineering, procurement, and operational leadership."
       />
