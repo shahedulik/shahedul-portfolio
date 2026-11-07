@@ -7,12 +7,10 @@ import Gate from './components/Gate';
 import ParticleMind from './components/ParticleMind';
 import { validatePortfolio } from './engine/validators';
 
-const ArchitectureView = lazy(() => import('./views/ArchitectureView'));
 const AtsView = lazy(() => import('./views/AtsView'));
 const CareerView = lazy(() => import('./views/CareerView'));
 const CredentialsView = lazy(() => import('./views/CredentialsView'));
 const TelemetryView = lazy(() => import('./views/TelemetryView'));
-const VenturesView = lazy(() => import('./views/VenturesView'));
 
 function ViewSkeleton() {
   return (
@@ -87,9 +85,7 @@ export default function App() {
         <Route element={<Shell />}>
           <Route index element={<Navigate to="/telemetry" replace />} />
           <Route path="/telemetry" element={<TelemetryView />} />
-          <Route path="/architecture" element={<ArchitectureView />} />
           <Route path="/career" element={<CareerView />} />
-          <Route path="/ventures" element={<VenturesView />} />
           <Route path="/credentials" element={<CredentialsView />} />
           <Route path="/ats" element={<AtsView />} />
           <Route path="*" element={<Navigate to="/telemetry" replace />} />

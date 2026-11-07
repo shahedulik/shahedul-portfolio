@@ -12,7 +12,14 @@ export default function TelemetryView() {
   const stats = careerStats();
   return (
     <div className="space-y-8">
-      <SectionTitle index="01" title="Executive BI Telemetry" subtitle={PROFILE.summary} />
+      <div>
+        <SectionTitle index="01" title="I turn BI and procurement data into won contracts and pipeline." />
+        <div className="max-w-[66ch] leading-relaxed">
+          <p data-testid="hero-summary" className="text-sm text-mut">
+            Certified Data Analyst with 150+ US public-sector RFP submissions, 5 strategic joint ventures, and a pipeline that converts procurement signal into contract outcomes. I combine predictive analytics, market research, and sales engineering to unlock enterprise profitability for clients across four markets.
+          </p>
+        </div>
+      </div>
 
       <div className="flex flex-wrap gap-2 font-mono text-[11px]">
         <span className="border border-line/70 bg-ink-700/60 text-mut px-2 py-1 rounded-sm">{stats.mandates} mandates</span>
@@ -23,7 +30,12 @@ export default function TelemetryView() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {getKpis().map((k) => (
-          <KpiCard key={k.label} kpi={k} />
+          <div key={k.label} className="flex flex-col [&>:first-child]:flex-1">
+            <KpiCard kpi={k} />
+            <div className="kpi-card-footer px-1 pt-1.5 font-mono text-[10px] tracking-wide text-mut/70">
+              As of November 2026 · source: CRM
+            </div>
+          </div>
         ))}
       </div>
 

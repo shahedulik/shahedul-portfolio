@@ -128,3 +128,43 @@
 @media (prefers-contrast: more) {
   .gate-ripple { background:radial-gradient(circle, rgba(220,234,242,0.85), rgba(220,234,242,0) 70%); }
 }
+
+/* =========================================
+   PHASE 1 — HEADER CTA + NAV COLLAPSE
+   ========================================= */
+html { scrollbar-gutter: stable; }
+.kpi-card-footer { min-height: 2.5rem; }
+.header-cta {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid #8fb2c6;
+  border-radius: 9999px;
+  color: #e6edf1;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.header-cta:hover { background-color: rgba(143, 178, 198, 0.15); color: #fff; }
+.header-cta:focus-visible, .nav-menu-toggle:focus-visible { outline: 2px solid #8fb2c6; outline-offset: 2px; }
+.nav-menu-toggle {
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid rgba(51, 86, 110, 0.7);
+  border-radius: 0.125rem;
+  color: #e6edf1;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+@media (max-width: 720px) {
+  .nav-tabs { display: none; }
+  .nav-tabs.open { display: flex; flex-direction: column; }
+  .nav-menu-toggle { display: inline-flex; }
+}
+@media (min-width: 721px) {
+  .nav-menu-toggle { display: none; }
+}

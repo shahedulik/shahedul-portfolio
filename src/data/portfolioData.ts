@@ -5,10 +5,10 @@ import type {
 
 export const PROFILE = {
   name: 'Shahedul Islam Khan',
-  headline: 'BI Analyst · Solution Architect',
+  headline: 'Business Intelligence Analyst',
   title: 'Business Intelligence Analyst & Business Development Manager',
   summary:
-    'Data-trained Business Intelligence Analyst & BDM adept at combining predictive analytics, market research, and sales engineering to unlock enterprise profitability. Certified Data Analyst with hands-on experience in machine learning, pipeline modeling, and multi-channel outreach optimization. Leverages technical data expertise to incubate AI solutions providers (LLMs & AI agents), execute 90+ public sector RFP submissions, and structure strategic joint ventures. Skilled at translating complex data assets into actionable business strategies and alignment across executive stakeholders.',
+    'Data-trained Business Intelligence Analyst & BDM adept at combining predictive analytics, market research, and sales engineering to unlock enterprise profitability. Certified Data Analyst with hands-on experience in machine learning, pipeline modeling, and multi-channel outreach optimization. Leverages technical data expertise to incubate AI solutions providers (LLMs & AI agents), execute 150+ public sector RFP submissions, and structure strategic joint ventures. Skilled at translating complex data assets into actionable business strategies and alignment across executive stakeholders.',
   email: 'shahedulik6904@gmail.com',
   phone: '+880 1979-071285',
   phoneRaw: '+8801979071285',
@@ -16,7 +16,7 @@ export const PROFILE = {
 };
 
 export const KPIS: Kpi[] = [
-  { label: 'Public-sector RFP submissions', value: 90, suffix: '+', trend: '▲ US federal & state pipelines', context: 'Procurement proposals produced at UPSKILL Consultancy NYC' },
+  { label: 'Public-sector RFP submissions', value: 150, suffix: '+', trend: '▲ US federal & state pipelines', context: 'Procurement proposals produced at UPSKILL Consultancy NYC' },
   { label: 'Client base expansion in 60 days', value: 30, suffix: '%+', trend: '▲ HRMS / LMS book of business', context: 'Multi-channel GTM across 10+ SME verticals, US Tri-State area' },
   { label: 'Strategic Joint Ventures structured', value: 5, trend: '▲ VOSB & WOSB set-asides', context: 'JV architecture to expand contract bidding eligibility' },
   { label: 'Monthly market-share target attained', value: 120, suffix: '%', trend: '▲ +20% over plan, month over month', context: 'AU PropTech software pipeline at PREZIO Australia' },
@@ -226,6 +226,6 @@ export const STACK_MATRIX: StackRow[] = [
   { layer: 'OLTP + analytics', choice: 'PostgreSQL 16 + Citus', why: 'One engine, horizontal sharding when tenant count grows; WAL-G point-in-time recovery' },
   { layer: 'Cache', choice: 'Valkey', why: 'Community-governed Redis fork — zero license risk, sub-millisecond reads' },
   { layer: 'Compute', choice: 'TypeScript on Bun (API) + React edge SPA', why: 'One language across the stack; Bun for IO-bound API throughput' },
-  { layer: 'Orchestration', choice: 'Kubernetes (EKS) + ArgoCD', why: 'Self-healing control loops + GitOps drift correction (selfHeal: true)' },
+  { layer: 'Orchestration', choice: 'Kubernetes (EKS) + ArgoCD', why: 'Self-healing control loops + GitOps drift correction' },
   { layer: 'Observability', choice: 'OpenTelemetry → Prometheus / Tempo / Grafana', why: 'Vendor-neutral instrumentation, three telemetry signals, SLO burn-rate alerting' },
 ];

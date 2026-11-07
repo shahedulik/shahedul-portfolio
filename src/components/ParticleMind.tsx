@@ -13,9 +13,7 @@ const CONFIG = {
 
 const FORMATION_BY_PATH: Record<string, number> = {
   '/telemetry': 0, // cluster
-  '/architecture': 1, // trace
   '/career': 2, // lattice
-  '/ventures': 3, // converge
   '/credentials': 0,
   '/ats': 0,
 };
